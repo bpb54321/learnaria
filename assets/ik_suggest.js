@@ -1,12 +1,11 @@
 (function ($, window, document, undefined) {
 
-  var pluginName = "ik_suggest",
-    defaults = {
-      'minLength': 2,
-      'maxResults': 10,
-      'source': []
-
-    };
+  // Default options for the plugin
+  var defaults = {
+    'minLength': 2,
+    'maxResults': 10,
+    'source': [],
+  };
 
 	/**
 	 * @constructs Plugin
@@ -16,12 +15,13 @@
 	 * @param {number} options.minLength - Mininmum string length before sugestions start showing.
 	 * @param {number} options.maxResults - Maximum number of shown suggestions.
 	 */
-  function Plugin(element, options) {
+  function Plugin($element, options) {
 
-    this.element = $(element);
+    this.$element = $element;
+
+    // Overwrite the default options with the options that are passed in
     this.options = $.extend({}, defaults, options);
     this._defaults = defaults;
-    this._name = pluginName;
 
     this.init();
   }
@@ -29,11 +29,8 @@
   /** Initializes plugin. */
   Plugin.prototype.init = function () {
 
-    var $elem, plugin;
-
-    plugin = this;
-
-    plugin.notify = $('<div/>') // add hidden live region to be used by screen readers
+    debugger;
+    this.notify = $('<div/>') // add hidden live region to be used by screen readers
       .addClass('ik_readersonly');
 
     $elem = plugin.element
@@ -199,17 +196,14 @@
 
   };
 
-  $.fn[pluginName] = function (options) {
+  $.fn.suggestionBox = function (options) {
 
+    // this.each() will return "this" (the jQuery object), which makes
+    // the plugin chainable
     return this.each(function () {
-
-      if (!$.data(this, pluginName)) {
-        $.data(this, pluginName,
-          new Plugin(this, options));
-      }
-
+      new Plugin(this, options);
     });
 
-  }
+  };
 
 })(jQuery, window, document);
