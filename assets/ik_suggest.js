@@ -15,9 +15,9 @@
 	 * @param {number} options.minLength - Mininmum string length before sugestions start showing.
 	 * @param {number} options.maxResults - Maximum number of shown suggestions.
 	 */
-  function Plugin($element, options) {
+  function Plugin(element, options) {
 
-    this.$element = $element;
+    this.$element = $(element);
 
     // Overwrite the default options with the options that are passed in
     this.options = $.extend({}, defaults, options);
@@ -29,24 +29,20 @@
   /** Initializes plugin. */
   Plugin.prototype.init = function () {
 
-    debugger;
-    this.notify = $('<div/>') // add hidden live region to be used by screen readers
-      .addClass('ik_readersonly');
+    // Create hidden live region to be used by screen readers
+    this.$liveRegion = this.$element.after('<div class="ik_readersonly"></div>');
 
-    $elem = plugin.element
-      .attr({
-        'autocomplete': 'off'
-      })
-      .wrap('<span class="ik_suggest"></span>')
-      .on('focus', { 'plugin': plugin }, plugin.onFocus)
-      .on('keydown', { 'plugin': plugin }, plugin.onKeyDown) // add keydown event
-      .on('keyup', { 'plugin': plugin }, plugin.onKeyUp) // add keyup event
-      .on('focusout', { 'plugin': plugin }, plugin.onFocusOut);  // add focusout event
+    // Create the suggestion list element
+    this.$suggestionList = this.$element.after('<ul class="suggestions"></ul>');
 
-    plugin.list = $('<ul/>').addClass('suggestions');
+    // Add event listeners
+    this.$element.on('focus.suggestionBox', this.onFocus);
+    this.$element.on('keydown.suggestionBox', this.onKeyDown);
+    this.$element.on('keyup.suggestionBox', this.onKeyUp);
+    this.$element.on('focusout.suggestionBox', this.onFocusOut);
 
-    $elem.after(plugin.notify, plugin.list);
-
+    // Turn autocomplete off
+    this.$element.attr({'autocomplete': 'off'});
   };
 
 	/**
